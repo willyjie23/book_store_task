@@ -11,7 +11,7 @@ module V1
       requires :open_time, type: String, desc: 'ex: 3pm or 5:30am'
     end
 
-    post '/store_certain_time' do
+    get '/store_certain_time' do
       result = []
       Store.all.each do |s|
         s.opening_hours.each do |ss|
@@ -28,7 +28,7 @@ module V1
       requires :day, type: String, desc: 'ex: Mon or Fri'
     end
 
-    post '/store_open_day' do
+    get '/store_open_day' do
       result = []
       Store.all.each do |s|
         s.opening_hours.each do |ss|
@@ -42,15 +42,14 @@ module V1
 
     desc 'Store opening hours'
     params do
-      requires :day, type: String, desc: 'ex: Mon or Fri'
+      requires :open_hours, type: String
     end
 
-    post '/store_open_day' do
+    get '/store_open_hours' do
       result = []
       Store.all.each do |s|
-        s.opening_hours.each do |ss|
-          result << ss.merge({ store_name: s.name }) if ss[:day] == params[:day]
-        end
+        h = s.opening_hours.map { |ss| Time.parse(ss[:close]).strftime('%k').to_i - Time.parse(ss[:open]).strftime('%k').to_i }
+        result << s.name if h.sum >= params[:open_hours].to_i
       end
       not_found_method(result)
 
