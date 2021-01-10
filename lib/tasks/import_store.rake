@@ -1,7 +1,7 @@
 namespace :import_data do
   desc 'Craete import data to Store'
   task book_store: :environment do
-    file = JSON.parse(File.read('book_storm/data/book_store_data.json'))
+    file = JSON.parse(File.read('data/book_store_data.json'))
     file.each do |data|
       ary = []
       data['openingHours'].split('/').each do |t|
@@ -22,7 +22,7 @@ namespace :import_data do
 
   desc 'Create import data to User'
   task user: :environment do
-    file = JSON.parse(File.read('book_storm/data/user_data.json'))
+    file = JSON.parse(File.read('data/user_data.json'))
     file.each do |data|
       User.create(
         name: data['name'],
