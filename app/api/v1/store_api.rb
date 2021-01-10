@@ -55,5 +55,20 @@ module V1
 
       result
     end
+
+    desc 'Store book total'
+    params do
+      requires :total, type: Integer
+    end
+
+    get '/store_book_total' do
+      result = []
+      Store.all.each do |s|
+        result << s if s.books.size >= params[:total]
+      end
+      not_found_method(result)
+
+      result
+    end
   end
 end

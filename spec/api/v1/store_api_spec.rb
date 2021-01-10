@@ -62,4 +62,25 @@ RSpec.describe V1::StoreAPI do
       expect(result['error']).to eq('Record Not Found')
     end
   end
+
+  context 'GET /api/v1/store_book_total' do
+    it 'should return 200 and result' do
+      params = { total: 14 }
+      get '/api/v1/store_book_total', params: params
+      result = JSON.parse(response.body)
+
+      expect(response.status).to eq(200)
+      expect(result.first['name']).to eq('Look Inna Book')
+      expect(result.first['books'].size).to eq(14)
+    end
+
+    it 'should return 404 and not found' do
+      params = { total: 15 }
+      get '/api/v1/store_book_total', params: params
+      result = JSON.parse(response.body)
+
+      expect(response.status).to eq(404)
+      expect(result['error']).to eq('Record Not Found')
+    end
+  end
 end
