@@ -70,5 +70,20 @@ module V1
 
       result
     end
+
+    desc 'Search store name'
+    params do
+      requires :name, type: String
+    end
+
+    get '/store_name' do
+      result = []
+      Store.all.each do |s|
+        result << s if s.name.include?(params[:name])
+      end
+      not_found_method(result)
+
+      result
+    end
   end
 end
