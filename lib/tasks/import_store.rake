@@ -30,7 +30,17 @@ namespace :import_data do
         purchase_history: data['purchaseHistory']
       )
     end
+    p 'done!!!'
+  end
 
+  desc 'Update users purchase_history time'
+  task user_update: :environment do
+    User.all.each do |u|
+      u.purchase_history.each do |d|
+        d['transactionDate'] = DateTime.strptime(d['transactionDate'], '%m/%d/%Y %I:%M %p').strftime('%F').to_date
+      end
+      u.save
+    end
     p 'done!!!'
   end
 end
