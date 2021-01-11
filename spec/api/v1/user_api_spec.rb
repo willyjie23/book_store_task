@@ -12,4 +12,16 @@ RSpec.describe V1::UserAPI do
       expect(result.first['total']).to eq(65.92)
     end
   end
+
+  context 'GET /api/v1/total_transaction' do
+    it 'should return 200 and users' do
+      params = { start_date: '20180401', end_date: '20180430' }
+      get '/api/v1/total_transaction', params: params
+      result = JSON.parse(response.body)
+
+      expect(response.status).to eq(200)
+      expect(result['total_transaction']).to eq(55)
+      expect(result['amount']).to eq(595.48)
+    end
+  end
 end
