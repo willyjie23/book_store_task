@@ -103,4 +103,24 @@ RSpec.describe V1::StoreAPI do
       expect(result['error']).to eq('Record Not Found')
     end
   end
+
+  context 'POST /api/v1/update_store' do
+    it 'should return 200 and result' do
+      params = { id: 1, name: 'test' }
+      post '/api/v1/update_store', params: params
+      result = JSON.parse(response.body)
+
+      expect(response.status).to eq(201)
+      expect(result.first['message']).to eq('ok!')
+    end
+
+    it 'should return 404 and not found' do
+      params = { id: 25, name: 'test' }
+      post '/api/v1/update_store', params: params
+      result = JSON.parse(response.body)
+
+      expect(response.status).to eq(404)
+      expect(result['message']).to eq('Record Not Found')
+    end
+  end
 end

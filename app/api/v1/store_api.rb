@@ -85,5 +85,37 @@ module V1
 
       result
     end
+
+    desc 'Store update date'
+    params do
+      requires :id, type: Integer
+      optional :name, type: String, desc: 'New store name'
+      optional :old_book_name, type: String, desc: 'Old store book name'
+      optional :new_book_name, type: String, desc: 'New store book name'
+      optional :new_book_price, type: String, desc: 'New store book price'
+    end
+
+    post '/update_store' do
+      result = []
+      id = params[:id]
+      name = params[:name]
+      old_book_name = params[:old_book_name]
+      new_book_name = params[:new_book_name]
+      new_book_price = params[:new_book_price]
+      store = Store.find(id)
+      case
+      when name.present?
+        store.name = name
+      when old_book_name.present?
+        store.books.select { |book| book['bookName'] = new_book_name if book['bookName'] == old_book_name }
+      when new_book_price.present?
+        store.books.select { |book| book['price'] = new_book_price if book['bookName'] == old_book_name }
+      end
+      store.save
+      result << { message: 'ok!', store: store }
+      not_found_method(result)
+
+      result
+    end
   end
 end
