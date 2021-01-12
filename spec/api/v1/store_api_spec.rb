@@ -123,4 +123,15 @@ RSpec.describe V1::StoreAPI do
       expect(result['message']).to eq('Record Not Found')
     end
   end
+
+  context 'GET /api/v1/best_store' do
+    it 'should return 200 and result' do
+      get '/api/v1/best_store'
+      result = JSON.parse(response.body)
+
+      expect(response.status).to eq(200)
+      expect(result[0]).to eq('Turn the Page')
+      expect(result[4]).to eq('Uptown Books')
+    end
+  end
 end

@@ -117,5 +117,15 @@ module V1
 
       result
     end
+
+    desc 'Serach best Store'
+    get '/best_store' do
+      result = []
+      User.all.each do |user|
+        result << user.purchase_history.map { |b| b['storeName'] }
+      end
+      not_found_method(result)
+      result.flatten.sort_by { |x| -result.flatten.count(x) }.uniq
+    end
   end
 end
