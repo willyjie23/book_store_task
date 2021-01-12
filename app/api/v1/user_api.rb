@@ -48,5 +48,28 @@ module V1
 
       return { total_transaction: total_transaction, amount: amount }
     end
+
+    desc 'Query date consumption amount'
+    params do
+      requires :start_date, type: String, desc: 'ex: 19990101'
+      requires :end_date, type: String, desc: 'ex: 19990131'
+      requires :total_price, type: Float
+    end
+
+    get '/user_total_transaction_date' do
+      ary = []
+      result = []
+      start_date = params[:start_date].to_date
+      end_date = params[:end_date].to_date
+      total_price = params[:total_price]
+      User.all.each do |u|
+        u.purchase_history.select { |data| ary << data if data['transactionDate'].between?(start_date, end_date) }
+        if ary.map { |x| x['transactionAmount'] }.sum >= total_price
+          result << { user: u.name, total_price: ary.map { |x| x['transactionAmount'] }.sum }
+        end
+      end
+      not_found_method(result)
+      result.sort_by { |p| -p[:total_price] }
+    end
   end
 end
