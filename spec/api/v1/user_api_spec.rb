@@ -33,7 +33,28 @@ RSpec.describe V1::UserAPI do
 
       expect(response.status).to eq(200)
       expect(result[0]['user']).to eq('Beverly Corbin')
-      expect( result.last['user']).to eq("Alma Meadows")
+      expect(result.last['user']).to eq('Alma Meadows')
+    end
+  end
+
+  context 'POST /api/v1/user_buy_books' do
+    it 'should return 200 and user' do
+      params = { user_id: 20, store_id: 1, book_name: 'Ruby: The Autobiography' }
+      post '/api/v1/user_buy_books', params: params
+      result = JSON.parse(response.body)
+
+      expect(response.status).to eq(201)
+      expect(result.first['purchase_history'].last.last['bookName']).to eq('Ruby: The Autobiography')
+    end
+
+    it 'should return 404 and not found' do
+      params = { user_id: 1, store_id: 1, book_name: 'Ruby: The Autobiography' }
+      post '/api/v1/user_buy_books', params: params
+      result = JSON.parse(response.body)
+
+      expect(response.status).to eq(404)
+      expect(result['message']).to eq('Record Not Found')
+      expect(result['error_code']).to eq('record_not_found')
     end
   end
 end

@@ -71,5 +71,26 @@ module V1
       not_found_method(result)
       result.sort_by { |p| -p[:total_price] }
     end
+
+    desc 'User pay books'
+    params do
+      requires :user_id, type: Integer
+      requires :store_id, type: Integer
+      requires :book_name, type: String
+    end
+
+    post '/user_buy_books' do
+      result = []
+      book_name = params[:book_name]
+      user = User.find(params[:user_id])
+      store = Store.find(params[:store_id])
+      book = store.books.select { |b| b['bookName'] == book_name }
+      user.purchase_history.push(book)
+      user.cash_balance = user.cash_balance.to_d - book.first['price']
+      user.save
+      result << user
+      not_found_method(result)
+      result
+    end
   end
 end
